@@ -48,14 +48,16 @@ Events are either `GAME_BEGIN` or `GAME_RESULT`. Tally any incoming results in d
 ### Database
 
 - tables
-    - games (actual data)
+    - games
         - id
         - time (timestamp of last update, from API)
-        - p1_id
-        - p2_id
-        - p1_play
-        - p2_play
-        - result (1 = p1 win, 0 = draw, -1 = p2 win)
+        - player_1 (id)
+        - player_2 (id)
+        - status (in progress/result)
+    - plays
+        - game_id
+        - player_id
+        - played (rock/paper/scissors)
     - players (id-name mapping)
         - name
         - id (UUID? raw incrementing usually bad)
