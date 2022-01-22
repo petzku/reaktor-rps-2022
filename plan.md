@@ -44,6 +44,7 @@ Events are either `GAME_BEGIN` or `GAME_RESULT`. Tally any incoming results in d
 - On fetching historical data:
     - Update any entries into database, except where DB has a newer timestamp (i.e. received a new result from websocket after API response). Possible this may never happen.
     - Fetch next page, if one exists
+    - note: final page has `{cursor: null, data: []}`
 
 ### Database
 
