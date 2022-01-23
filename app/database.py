@@ -6,11 +6,11 @@ import rps
 import math
 
 from typing import Optional
-from apityping import APIGameResult, GameResult, APIGameBegin, GameBegin, GameId, Timestamp, PlayerName, PlayerId
+from apityping import APIGameResult, GameResult, APIGameBegin, GameBegin, GameId, Timestamp, Player, PlayerName, PlayerId
 
 
 DB_FILE = 'results.db'
-GAMES_PAGE_LENGTH = 50
+GAMES_PAGE_LENGTH = 20
 
 def get_last_history_page() -> Optional[str]:
     """ Returns latest unfetched history page address """
@@ -148,9 +148,9 @@ def get_games_by_player(uuid: PlayerId, page: int = 0) -> list[GameResult]:
         INNER JOIN players AS p2 ON games.p2_id = p2.player_id
         INNER JOIN plays AS r1 ON games.game_id = r1.game_id AND games.p1_id = r1.player_id
         INNER JOIN plays AS r2 ON games.game_id = r2.game_id AND games.p2_id = r2.player_id
+        WHERE games.p1_id = :pid OR games.p2_id = :pid
         ORDER BY games.time DESC
-        LIMIT :lim OFFSET :off
-        WHERE games.p1_id = :pid OR games.p2_id = :pid """
+        LIMIT :lim OFFSET :off """
     cur.execute(query, {'pid': uuid, 'lim': GAMES_PAGE_LENGTH, 'off': page*GAMES_PAGE_LENGTH})
 
     return [
@@ -216,6 +216,15 @@ def get_player_stats(uuid: PlayerId) -> tuple[tuple[int, int, int],tuple[int, in
     plays = tuple(_plays[k] if k in _plays else 0 for k in "RPS")
 
     return results, plays
+
+def get_player(uuid: PlayerId) -> Player:
+    con = sqlite3.connect(DB_FILE)
+    cur = con.cursor()
+
+    cur.execute("SELECT player_id, name FROM players WHERE player_id=?", (uuid,))
+    pid, name = cur.fetchone()
+
+    return {'pid': pid, 'name': name}
 
 
 def result_from_api_result(api_res: APIGameResult) -> GameResult:
