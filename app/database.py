@@ -5,7 +5,7 @@ from uuid import uuid4
 import rps
 
 from typing import Optional
-from apityping import APIGameResult, GameResult, PlayerName, PlayerId
+from apityping import APIGameResult, GameResult, APIGameBegin, GameBegin, PlayerName, PlayerId
 
 
 DB_FILE = 'results.db'
@@ -100,11 +100,11 @@ def add_game_result(game: GameResult) -> bool:
     p2 = game['player2']
 
     try:
-        cur.execute(result_query, (game['gid'], game['time'], p1['pid'], p2['pid'], 1)) # 1 = finished
+        cur.execute(result_query, (game['gameId'], game['t'], p1['pid'], p2['pid'], 1)) # 1 = finished
         
         cur.executemany(play_query, (
-            (gid, p1['pid'], p1['played'].value, p1['result'].value),
-            (gid, p2['pid'], p2['played'].value, p2['result'].value)
+            (game['gameId'], p1['pid'], p1['played'].value, p1['result'].value),
+            (game['gameId'], p2['pid'], p2['played'].value, p2['result'].value)
         ))
 
         con.commit()
