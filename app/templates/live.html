@@ -10,5 +10,5 @@
       {% include "gameresult.j2" %}
     {% endfor %}
   </ul>
-  <span id="nolive" {% if live_games() %}hidden="true"{% endif %}>No live games right now!</span>
+  <span id="nolive" {% if live_games() %}style="display: none;"{% endif %}>No live games right now!</span>
 {% endblock content %}

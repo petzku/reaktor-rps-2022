@@ -1,5 +1,5 @@
 {% if is_finished(game) %}
-  <li class="result">
+  <li class="result" id="{{ game.gameId }}">
     <div class="player left">
       <a href="{{ url_for('player', pid=game.player1.pid) }}">{{ game.player1.name }}</a>
       {% if is_win(game.player1.result) %} 👑 {% endif %}
@@ -13,7 +13,7 @@
     </div>
   </li>
 {% else %}
-  <li class="result">
+  <li class="result" id="{{ game.gameId }}">
     <div class="player left"><a href="{{ url_for('player', pid=game.player1.pid) }}">{{ game.player1.name }}</a></div>
     <span class='middle'>vs.</span>
     <div class="player right"><a href="{{ url_for('player', pid=game.player2.pid) }}">{{ game.player2.name }}</a></div>
