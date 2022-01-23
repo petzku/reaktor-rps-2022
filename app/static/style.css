@@ -1,7 +1,15 @@
+html {
+    padding: 2% 5%;
+}
+
+h1 h2 h3 {
+    margin-left: 3%;
+}
+
 ul.gamelist {
     list-style-type: none;
     padding-left: 0;
-    width: 40%;
+    /* width: 40%; */
 }
 
 li.result {
@@ -36,5 +44,14 @@ div.player {
     border-style: solid;
     display: inline-flex;
     justify-content: space-between;
+    width: 40%;
+}
+
+div.stats {
+    float: left;
+    width: 45%;
+}
+div.sidebar {
+    float: right;
     width: 40%;
 }
