@@ -38,8 +38,9 @@ def get_result(a: RPS, b: RPS) -> Optional[Result]:
         if b == RPS.PAPER:
             return Result.WIN
 
-    # unreachable if typing is adhered to; no need to return anything
+    # unreachable if typing is adhered to
     print(f"Unknown play in match: {a} vs {b}")
+    return None
 
 def rps_from_str(s: str) -> Optional[RPS]:
     """ Validates a string into an acceptable rock-paper-scissors play. """

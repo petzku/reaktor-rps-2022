@@ -25,6 +25,7 @@ def get_last_history_page() -> Optional[str]:
         page, = res
         if page:
             return page
+    return None
 
 def update_history_page(key: str) -> None:
     """ Stores the cursor address for the history API endpoint """
@@ -85,6 +86,7 @@ def _add_game_result(gid: str, time: int, p1_id: str, p2_id: str, p1_play: rps.R
         
         p1_res = rps.get_result(p1_play, p2_play)
         p2_res = rps.get_result(p2_play, p1_play)
+        assert (p1_res is not None) and (p2_res is not None)
 
         cur.executemany(play_query, (
             (gid, p1_id, p1_play.value, p1_res.value),
@@ -130,6 +132,8 @@ def add_history_games(data) -> None: # TODO: typing
         
         p2_id = ids[p2['name']]
         p2_play = rps.rps_from_str(p2['played'])
+
+        assert (p1_play is not None) and (p2_play is not None)
 
         if not _add_game_result(gid, t, p1_id, p2_id, p1_play, p2_play):
             print("Error adding game: ", game)
