@@ -200,6 +200,23 @@ def get_games_count_total() -> tuple[int, int]:
     (n,) = cur.fetchone()
     return n, math.ceil(n / GAMES_PAGE_LENGTH)
 
+def get_player_stats(uuid: PlayerId) -> tuple[tuple[int, int, int],tuple[int, int, int]]:
+    """ Return player stats in the format: ((win,loss,tie), (rock,paper,scissors)) """
+
+    con = sqlite3.connect(DB_FILE)
+    cur = con.cursor()
+
+    cur.execute("SELECT result,COUNT(result) FROM plays WHERE player_id=? GROUP BY result", (uuid,))
+    _results = {res: count for res, count in cur.fetchall()}
+
+    cur.execute("SELECT played,COUNT(played) FROM plays WHERE player_id=? GROUP BY played", (uuid,))
+    _plays = {play: count for play, count in cur.fetchall()}
+
+    results = tuple(_results[k] if k in _results else 0 for k in "WLT")
+    plays = tuple(_plays[k] if k in _plays else 0 for k in "RPS")
+
+    return results, plays
+
 
 def result_from_api_result(api_res: APIGameResult) -> GameResult:
     """ Construct an internal representation of a finished game from the API JSON format.
