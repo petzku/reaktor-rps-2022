@@ -61,6 +61,19 @@ Events are either `GAME_BEGIN` or `GAME_RESULT`. Tally any incoming results in d
         - played (rock/paper/scissors)
     - players (id-name mapping)
         - name
-        - id (UUID? raw incrementing usually bad)
+        - id (UUID)
     - meta
         - last historical API page (kept for faster restarting of server)
+
+## Looking back
+
+Parts of the project, especially the front-end, are left unfortunately crude, because of the time pressure. Some features, such as live updating of results, were not achieved. However, refreshing the front page *does* provide up-to-date information on ongoing games.
+
+The database is unfortunately quite slow, at least on my develepment machine, because of the large amount of data and joins required for most queries.
+
+I could not for the life of me figure out (in one day) why SocketIO seemingly never emits events, despite the calls to `socketio.emit` being executed (or at least, all surrounding code was). Given more time, I might have opted to go for another library, if I could not figure out the issue at hand.
+
+### Known bugs
+
+Games where both players are the same are handled incorrectly. The database saves the game as a whole and both plays, but attempting to recall the result produces a problem: the database's joins produce a total of 4 games from this ("two" plays from player A and "two" plays from player B). Possible solution: save A/B ("side") info in the `plays` field.
+This is probably not a common occurence, but a bug nonetheless.
