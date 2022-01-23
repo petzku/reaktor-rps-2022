@@ -67,19 +67,19 @@ def create_app():
     return app
 
 def socketio_app(app):
-    socketio = SocketIO(app)
+    socketio = SocketIO(app, logging=True)
 
     def on_api_gamebegin(game: GameBegin) -> None:
         # new game, add to live games and broadcast
         live_games[game['gameId']] = game
 
-        socketio.emit('game_begin', {'gameInfo': game}, namespace='/livefeed')
+        socketio.emit('game begin', {'gameInfo': game}, namespace='/livefeed')
 
     def on_api_gameresult(game: GameResult) -> None:
         # game finished, remove from live games (if it is there)
         live_games.pop(game['gameId'], None)
 
-        socketio.emit('game_result', {'gameId': game['gameId']}, namespace='/livefeed')
+        socketio.emit('game result', {'gameId': game['gameId']}, namespace='/livefeed')
 
     api_listener = apiconn.create_websocket_listener(on_api_gameresult, on_api_gamebegin)
 
