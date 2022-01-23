@@ -2,9 +2,10 @@
 
 import sqlite3
 from uuid import uuid4
-from typing import Optional
-
 import rps
+
+from typing import Optional
+from apityping import GameResult
 
 
 DB_FILE = 'results.db'
@@ -101,7 +102,7 @@ def _add_game_result(gid: str, time: int, p1_id: str, p2_id: str, p1_play: rps.R
     finally:
         con.close()
 
-def add_history_games(data) -> None: # TODO: typing
+def add_history_games(data: list[GameResult]) -> None: # TODO: typing
     """ Add one or more game results to the database """
 
     # Start by getting existing player IDs from database

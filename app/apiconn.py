@@ -2,36 +2,12 @@
 
 import database
 import requests
-from typing import Optional, TypedDict, Literal
+
+from typing import Optional
+from apityping import *
 
 
 API_BASE = "https://bad-api-assignment.reaktor.com/rps"
-
-## Type definitions
-RpsText = Literal['ROCK', 'PAPER', 'SCISSORS']
-PlayerName = str
-GameId = str
-Timestamp = int
-
-class Player(TypedDict):
-    name: PlayerName
-
-class PlayerPlay(TypedDict):
-    name: PlayerName
-    played: RpsText
-
-class GameResult(TypedDict):
-    type: Literal["GAME_RESULT"]
-    gameId: GameId
-    t: Timestamp
-    playerA: PlayerPlay
-    playerB: PlayerPlay
-
-class GameBegin(TypedDict):
-    type: Literal["GAME_BEGIN"]
-    gameId: GameId
-    playerA: Player
-    playerB: Player
 
 
 def _fetch_history_page(key: Optional[str] = None) -> tuple[Optional[str], list[GameResult]]:
