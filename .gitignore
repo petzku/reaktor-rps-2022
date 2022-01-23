@@ -1,3 +1,6 @@
 venv
 .vscode
-app/results.db
+app/results.db*
+*.pyc
+*.pyo
+__pycache__
