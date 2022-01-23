@@ -137,12 +137,12 @@ def add_history_games(data: list[APIGameResult]) -> None: # TODO: typing
             print("Error adding game: ", game)
 
 
-def get_games_by_player(uuid: PlayerId, page: int) -> list[GameResult]:
+def get_games_by_player(uuid: PlayerId, page: int = 0) -> list[GameResult]:
     """ Get nth page of a player's games. """
     con = sqlite3.connect(DB_FILE)
     cur = con.cursor()
 
-    query = """SELECT games.game_id, games.time, p1_id, p1.name, r1.played, r1.result, p2_id, p2.name, p2.played, p2.result
+    query = """SELECT games.game_id, games.time, p1_id, p1.name, r1.played, r1.result, p2_id, p2.name, r2.played, r2.result
         FROM games
         INNER JOIN players AS p1 ON games.p1_id = p1.player_id
         INNER JOIN players AS p2 ON games.p2_id = p2.player_id
@@ -158,12 +158,12 @@ def get_games_by_player(uuid: PlayerId, page: int) -> list[GameResult]:
         for gid, t, p1_id, p1_name, p1_play, p1_res, p2_id, p2_name, p2_play, p2_res in cur.fetchall()
     ]
 
-def get_games_history(page: int) -> list[GameResult]:
+def get_games_history(page: int = 0) -> list[GameResult]:
     """ Get nth page of all played games. """
     con = sqlite3.connect(DB_FILE)
     cur = con.cursor()
 
-    query = """SELECT games.game_id, games.time, p1_id, p1.name, r1.played, r1.result, p2_id, p2.name, p2.played, p2.result
+    query = """SELECT games.game_id, games.time, p1_id, p1.name, r1.played, r1.result, p2_id, p2.name, r2.played, r2.result
         FROM games
         INNER JOIN players AS p1 ON games.p1_id = p1.player_id
         INNER JOIN players AS p2 ON games.p2_id = p2.player_id
