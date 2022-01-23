@@ -135,6 +135,10 @@ def add_history_games(data: list[APIGameResult]) -> None: # TODO: typing
 
 
 def result_from_api_result(api_res: APIGameResult) -> GameResult:
+    """ Construct an internal representation of a finished game from the API JSON format.
+    
+    Creates players in database if necessary, which means this may have side effects. """
+    
     p1, p2 = api_res['playerA'], api_res['playerB']
 
     ids = get_or_create_players([p1['name'], p2['name']])
@@ -165,5 +169,25 @@ def result_from_api_result(api_res: APIGameResult) -> GameResult:
             'name': p2['name'],
             'played': p2_play,
             'result': p2_res
+        }
+    }
+
+def begin_from_api_begin(api_beg: APIGameBegin) -> GameBegin:
+    """ Construct an internal representation of an unfinished game from the API JSON format.
+    
+    Creates players in database if necessary, which means this may have side effects. """
+
+    p1_name, p2_name = api_beg['playerA']['name'], api_beg['playerB']['name']
+    ids = get_or_create_players([p1_name, p2_name])
+
+    return {
+        'gameId': api_beg['gameId'],
+        'player1': {
+            'pid': ids[p1_name],
+            'name': p1_name,
+        },
+        'player2': {
+            'pid': ids[p2_name],
+            'name': p2_name,
         }
     }
