@@ -2,14 +2,25 @@
 
 from flask import Flask, render_template
 from flask_socketio import SocketIO
-import apiconn
+import apiconn, database
 
 from apityping import is_finished
-from rps import is_win
+from rps import is_win, emoji_from_play
 
+live_games = []
+
+def get_live_games():
+    return live_games
 
 def create_app():
     app = Flask(__name__)
+
+    app.jinja_env.globals.update(
+        live_games = get_live_games,
+        is_finished = is_finished,
+        is_win = is_win,
+        emoji = emoji_from_play
+    )
 
     @app.route("/")
     def live():
@@ -41,6 +52,9 @@ if __name__ == "__main__":
 
     # update missing history
     #apiconn.fetch_new_history()
+
+    # XXX: temporary for testing
+    live_games = database.get_games_history()
 
     app = create_app()
     socketio = socketio_app(app)

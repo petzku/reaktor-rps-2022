@@ -5,9 +5,10 @@
 {% endblock %}
 
 {% block content %}
-  <ul>
-    {% for game in get_live_games() %}
+  <ul id="live">
+    {% for game in live_games() %}
       {% include "gameresult.j2" %}
     {% endfor %}
   </ul>
-{% endblock %}
+  <span id="nolive" {% if live_games() %}hidden="true"{% endif %}>No live games right now!</span>
+{% endblock content %}

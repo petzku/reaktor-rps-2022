@@ -2,9 +2,9 @@
   <li>
     <a href="{{ url_for('player', pid=game.player1.pid) }}">{{ game.player1.name }}</a>
     {% if is_win(game.player1.result) %} 👑 {% endif %}
-    {{ emoji_from_play(game.player1.played) }}
+    {{ emoji(game.player1.played) }}
     vs.
-    {{ emoji_from_play(game.player2.played) }}
+    {{ emoji(game.player2.played) }}
     {% if is_win(game.player2.result) %} 👑 {% endif %}
     <a href="{{ url_for('player', pid=game.player2.pid) }}">{{ game.player2.name }}</a>
   </li>
