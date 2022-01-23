@@ -67,11 +67,14 @@ Events are either `GAME_BEGIN` or `GAME_RESULT`. Tally any incoming results in d
 
 ## Looking back
 
-Parts of the project, especially the front-end, are left unfortunately crude, because of the time pressure. Some features, such as live updating of results, were not achieved. However, refreshing the front page *does* provide up-to-date information on ongoing games.
+Parts of the project, especially the front-end, are left unfortunately crude, because of the time pressure. ~~Some features, such as live updating of results, were not achieved. However, refreshing the front page *does* provide up-to-date information on ongoing games.~~ Apparently this is a bug on my dev machine, as it worked fine on another machine. Probably caused by `eventlet`, as the commit before it was introduced seemed to work fine on another machine.
 
 The database is unfortunately quite slow, at least on my develepment machine, because of the large amount of data and joins required for most queries.
 
-I could not for the life of me figure out (in one day) why SocketIO seemingly never emits events, despite the calls to `socketio.emit` being executed (or at least, all surrounding code was). Given more time, I might have opted to go for another library, if I could not figure out the issue at hand.
+~~I could not for the life of me figure out (in one day) why SocketIO seemingly never emits events, despite the calls to `socketio.emit` being executed (or at least, all surrounding code was). Given more time, I might have opted to go for another library, if I could not figure out the issue at hand.~~
+I still haven't figured out the actual issue, but assuming things are working fine, the project should indeed work correctly(ish).
+
+For some reason, the bad-api callbacks fire twice. Another issue which could be solved with more time to debug, but not now. Likely caused by how I mess with the threads to get the API listener and SocketIO to co-exist.
 
 ### Known bugs
 
