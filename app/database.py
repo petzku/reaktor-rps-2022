@@ -6,7 +6,7 @@ import rps
 import math
 
 from typing import Optional
-from apityping import APIGameResult, GameResult, APIGameBegin, GameBegin, PlayerName, PlayerId
+from apityping import APIGameResult, GameResult, APIGameBegin, GameBegin, GameId, Timestamp, PlayerName, PlayerId
 
 
 DB_FILE = 'results.db'
@@ -154,22 +154,7 @@ def get_games_by_player(uuid: PlayerId, page: int) -> list[GameResult]:
     cur.execute(query, {'pid': uuid, 'lim': GAMES_PAGE_LENGTH, 'off': page*GAMES_PAGE_LENGTH})
 
     return [
-        {
-            'gameId': gid,
-            't': t,
-            'player1': {
-                'pid': p1_id,
-                'name': p1_name,
-                'played': rps.rps_from_str(p1_play),
-                'result': rps.result_from_str(p1_res)
-            },
-            'player2': {
-                'pid': p2_id,
-                'name': p2_name,
-                'played': rps.rps_from_str(p2_play),
-                'result': rps.result_from_str(p2_res)
-            }
-        }
+        _result_from_database_query(gid, t, p1_id, p1_name, p1_play, p1_res, p2_id, p2_name, p2_play, p2_res)
         for gid, t, p1_id, p1_name, p1_play, p1_res, p2_id, p2_name, p2_play, p2_res in cur.fetchall()
     ]
 
@@ -189,22 +174,7 @@ def get_games_history(page: int) -> list[GameResult]:
     cur.execute(query, {'lim': GAMES_PAGE_LENGTH, 'off': page*GAMES_PAGE_LENGTH})
 
     return [
-        {
-            'gameId': gid,
-            't': t,
-            'player1': {
-                'pid': p1_id,
-                'name': p1_name,
-                'played': rps.rps_from_str(p1_play),
-                'result': rps.result_from_str(p1_res)
-            },
-            'player2': {
-                'pid': p2_id,
-                'name': p2_name,
-                'played': rps.rps_from_str(p2_play),
-                'result': rps.result_from_str(p2_res)
-            }
-        }
+        _result_from_database_query(gid, t, p1_id, p1_name, p1_play, p1_res, p2_id, p2_name, p2_play, p2_res)
         for gid, t, p1_id, p1_name, p1_play, p1_res, p2_id, p2_name, p2_play, p2_res in cur.fetchall()
     ]
 
@@ -286,5 +256,36 @@ def begin_from_api_begin(api_beg: APIGameBegin) -> GameBegin:
         'player2': {
             'pid': ids[p2_name],
             'name': p2_name,
+        }
+    }
+
+def _result_from_database_query(
+        gid: GameId, t: Timestamp,
+        p1_id: PlayerId, p1_name: PlayerName, p1_play: str, p1_res: str, 
+        p2_id: PlayerId, p2_name: PlayerName, p2_play: str, p2_res: str
+    ) -> GameResult:
+    
+    p1p = rps.rps_from_str(p1_play)
+    p2p = rps.rps_from_str(p2_play)
+    assert p1p is not None and p2p is not None
+
+    p1r = rps.result_from_str(p1_res)
+    p2r = rps.result_from_str(p2_res)
+    assert p1r is not None and p2r is not None
+
+    return {
+        'gameId': gid,
+        't': t,
+        'player1': {
+            'pid': p1_id,
+            'name': p1_name,
+            'played': p1p,
+            'result': p1r
+        },
+        'player2': {
+            'pid': p2_id,
+            'name': p2_name,
+            'played': p2p,
+            'result': p2r
         }
     }
