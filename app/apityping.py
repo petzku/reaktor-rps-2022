@@ -52,3 +52,6 @@ class GameBegin(TypedDict):
 
 ResultCallback = Callable[[GameResult], None]
 BeginCallback = Callable[[GameBegin], None]
+
+def is_finished(game: GameResult | GameBegin) -> bool:
+    return 't' in game.keys()

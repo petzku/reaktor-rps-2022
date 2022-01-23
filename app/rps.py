@@ -53,3 +53,31 @@ def rps_from_str(s: str) -> Optional[RPS]:
         return RPS.PAPER
     else:
         return None
+
+def result_from_str(s: str) -> Optional[Result]:
+    """ Validates a string into an acceptable result. """
+    s = s.lower()
+    if s in ('w', 'win'):
+        return Result.WIN
+    elif s in ('l', 'loss'):
+        return Result.LOSS
+    elif s in ('t', 'tie'):
+        return Result.TIE
+    else:
+        return None
+
+# stuff for frontend templates
+
+def is_win(res: Result) -> bool:
+    """ Returns True for a winning result (i.e. Result.WIN) """
+    return res is Result.WIN
+
+def emoji_from_play(p: RPS) -> str:
+    if p == RPS.ROCK:
+        return "✊"
+    elif p == RPS.PAPER:
+        return "🖐️"
+    elif p == RPS.SCISSORS:
+        return "✌️"
+    else:
+        return ""
