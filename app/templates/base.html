@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<head>
+  <title>{% block title %}{% endblock %} - RPSchive</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <nav>
+    <h1>RPSchive</h1>
+    <ul>
+      <li><a href="{{ url_for('live') }}">Live Games</a></li>
+      <li><a href="{{ url_for('history') }}">Game History</a></li>
+      <li><a href="{{ url_for('player_search') }}">Player Search</a></li>
+    </ul>
+  </nav>
+  <section class="content">
+    <header>
+      {% block header %}{% endblock %}
+    </header>
+    {% block content %}{% endblock %}
+  </section>
+</body>

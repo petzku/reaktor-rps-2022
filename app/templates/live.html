@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Live Games{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <ul>
+    {% for game in get_live_games() %}
+      {% include "gameresult.j2" %}
+    {% endfor %}
+  </ul>
+{% endblock %}
