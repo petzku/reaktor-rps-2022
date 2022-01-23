@@ -10,7 +10,7 @@ from apityping import *
 API_BASE = "https://bad-api-assignment.reaktor.com/rps"
 
 
-def _fetch_history_page(key: Optional[str] = None) -> tuple[Optional[str], list[GameResult]]:
+def _fetch_history_page(key: Optional[str] = None) -> tuple[Optional[str], list[APIGameResult]]:
     """ Fetch single page from the API
     
     key:
@@ -21,7 +21,7 @@ def _fetch_history_page(key: Optional[str] = None) -> tuple[Optional[str], list[
     nextpage:
         string of the next "cursor" address, or None if this was the last page.
     data:
-        raw, untouched JSON from the API. Structured as a list of GameResult dicts:
+        raw, untouched JSON from the API. Structured as a list of APIGameResult dicts:
         {
             "type": "GAME_RESULT",
             "gameId": string,

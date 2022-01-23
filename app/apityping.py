@@ -1,28 +1,51 @@
 """ Type definitions for API access """
 
-from typing import TypedDict, Literal
+from typing import TypedDict, Literal, Callable
+from rps import RPS, Result
 
 RpsText = Literal['ROCK', 'PAPER', 'SCISSORS']
 PlayerName = str
+PlayerId = str
 GameId = str
 Timestamp = int
 
-class Player(TypedDict):
+class APIPlayer(TypedDict):
     name: PlayerName
 
-class PlayerPlay(TypedDict):
+class APIPlayerPlay(TypedDict):
     name: PlayerName
     played: RpsText
 
-class GameResult(TypedDict):
+class APIGameResult(TypedDict):
     type: Literal["GAME_RESULT"]
     gameId: GameId
     t: Timestamp
-    playerA: PlayerPlay
-    playerB: PlayerPlay
+    playerA: APIPlayerPlay
+    playerB: APIPlayerPlay
 
-class GameBegin(TypedDict):
+class APIGameBegin(TypedDict):
     type: Literal["GAME_BEGIN"]
     gameId: GameId
-    playerA: Player
-    playerB: Player
+    playerA: APIPlayer
+    playerB: APIPlayer
+
+class PlayerPlay(TypedDict):
+    pid: PlayerId
+    name: PlayerName
+    played: RPS
+    result: Result
+
+class Player(TypedDict):
+    pid: PlayerId
+    name: PlayerName
+
+class GameResult(TypedDict):
+    gameId: GameId
+    t: Timestamp
+    player1: PlayerPlay
+    player2: PlayerPlay
+
+class GameBegin(TypedDict):
+    gameId: GameId
+    player1: Player
+    player2: Player
