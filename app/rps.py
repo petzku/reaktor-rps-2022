@@ -40,3 +40,15 @@ def get_result(a: RPS, b: RPS) -> Optional[Result]:
 
     # unreachable if typing is adhered to; no need to return anything
     print(f"Unknown play in match: {a} vs {b}")
+
+def rps_from_str(s: str) -> Optional[RPS]:
+    """ Validates a string into an acceptable rock-paper-scissors play. """
+    s = s.lower()
+    if s in ('r', 'rock', 'kivi'):
+        return RPS.ROCK
+    elif s in ('s', 'scissors', 'sakset'):
+        return RPS.SCISSORS
+    elif s in ('p', 'paper', 'paperi'):
+        return RPS.PAPER
+    else:
+        return None
