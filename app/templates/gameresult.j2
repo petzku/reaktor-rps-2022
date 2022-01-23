@@ -1,17 +1,21 @@
 {% if is_finished(game) %}
-  <li>
-    <a href="{{ url_for('player', pid=game.player1.pid) }}">{{ game.player1.name }}</a>
-    {% if is_win(game.player1.result) %} 👑 {% endif %}
-    {{ emoji(game.player1.played) }}
-    vs.
-    {{ emoji(game.player2.played) }}
-    {% if is_win(game.player2.result) %} 👑 {% endif %}
-    <a href="{{ url_for('player', pid=game.player2.pid) }}">{{ game.player2.name }}</a>
+  <li class="result">
+    <div class="player left">
+      <a href="{{ url_for('player', pid=game.player1.pid) }}">{{ game.player1.name }}</a>
+      {% if is_win(game.player1.result) %} 👑 {% endif %}
+      {{ emoji(game.player1.played) }}
+    </div>
+    <span class='middle'>vs.</span>
+    <div class="player right">
+      {{ emoji(game.player2.played) }}
+      {% if is_win(game.player2.result) %} 👑 {% endif %}
+      <a href="{{ url_for('player', pid=game.player2.pid) }}">{{ game.player2.name }}</a>
+    </div>
   </li>
 {% else %}
-  <li>
-    <a href="{{ url_for('player', pid=game.player1.pid) }}">{{ game.player1.name }}</a>
-    vs.
-    <a href="{{ url_for('player', pid=game.player2.pid) }}">{{ game.player2.name }}</a>
+  <li class="result">
+    <div class="player left"><a href="{{ url_for('player', pid=game.player1.pid) }}">{{ game.player1.name }}</a></div>
+    <span class='middle'>vs.</span>
+    <div class="player right"><a href="{{ url_for('player', pid=game.player2.pid) }}">{{ game.player2.name }}</a></div>
   </li>
 {% endif %}

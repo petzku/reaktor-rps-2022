@@ -3,14 +3,23 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 import apiconn, database
+import threading
 
-from apityping import is_finished
+from apityping import GameBegin, GameResult, is_finished
 from rps import is_win, emoji_from_play
 
-live_games = []
+live_games = {}
+
+class ApiListenerThread(threading.Thread):
+    def __init__(self, startup):
+        threading.Thread.__init__(self)
+        self.runnable = startup
+
+    def run(self):
+        self.runnable()
 
 def get_live_games():
-    return live_games
+    return live_games.values()
 
 def create_app():
     app = Flask(__name__)
@@ -60,7 +69,21 @@ def create_app():
 def socketio_app(app):
     socketio = SocketIO(app)
 
-    return socketio
+    def on_api_gamebegin(game: GameBegin) -> None:
+        # new game, add to live games and broadcast
+        live_games[game['gameId']] = game
+
+        socketio.emit('game_begin', {'gameInfo': game}, namespace='/livefeed')
+
+    def on_api_gameresult(game: GameResult) -> None:
+        # game finished, remove from live games (if it is there)
+        live_games.pop(game['gameId'], None)
+
+        socketio.emit('game_result', {'gameId': game['gameId']}, namespace='/livefeed')
+
+    api_listener = apiconn.create_websocket_listener(on_api_gameresult, on_api_gamebegin)
+
+    return socketio, api_listener
 
 if __name__ == "__main__":
 
@@ -71,6 +94,9 @@ if __name__ == "__main__":
     # live_games = database.get_games_history()
 
     app = create_app()
-    socketio = socketio_app(app)
+    socketio, api_ws = socketio_app(app)
+
+    api_thread = ApiListenerThread(api_ws.run_forever)
+    api_thread.start()
 
     socketio.run(app)

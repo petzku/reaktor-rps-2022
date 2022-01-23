@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-  <ul id="live">
+  <ul id="live" class="gamelist">
     {% for game in live_games() %}
       {% include "gameresult.j2" %}
     {% endfor %}

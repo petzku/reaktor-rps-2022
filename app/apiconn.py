@@ -67,7 +67,7 @@ def create_websocket_listener(result_callback: ResultCallback, begin_callback: B
 
     def _live_ws_callback(ws: websocket.WebSocketApp, message: str) -> None:
         try:
-            data = json.loads(message)
+            data = json.loads(json.loads(message))
         except json.decoder.JSONDecodeError as e:
             print(f"Error decoding websocket response ({e}): {message[:100]}")
             return
@@ -75,10 +75,14 @@ def create_websocket_listener(result_callback: ResultCallback, begin_callback: B
             if data['type'] == 'GAME_BEGIN':
                 beg = database.begin_from_api_begin(data)
                 begin_callback(beg)
+
             elif data['type'] == 'GAME_RESULT':
                 res = database.result_from_api_result(data)
-                database.add_game_result(res)
+                # database.add_game_result(res)
                 result_callback(res)
+        else:
+            print(f"no 'type' in {data.keys()}")
 
     url = WS_BASE + "/live"
     wsapp = websocket.WebSocketApp(url, on_message=_live_ws_callback)
+    return wsapp
