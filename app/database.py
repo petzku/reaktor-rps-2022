@@ -71,6 +71,20 @@ def _create_player(name: str, uuid: str) -> bool:
     finally:
         con.close()
 
+def get_or_create_players(names: list[str]) -> dict[str, str]:
+    ids = _get_player_ids_by_name(names)
+
+    # If some players aren't in database yet, add them
+    for player in names:
+        if player not in ids:
+            uuid = str(uuid4())
+            if _create_player(player, uuid):
+                ids[player] = uuid
+            else:
+                print(f"Error adding player '{player}' with ID {uuid}.")
+    return ids
+
+
 def add_game_result(game: GameResult) -> bool:
     """ Add a result to the database
     
@@ -105,21 +119,13 @@ def add_history_games(data: list[APIGameResult]) -> None: # TODO: typing
     """ Add one or more game results to the database """
 
     # Start by getting existing player IDs from database
-    players = set()
+    names = set()
     for game in data:
         p1_name = game['playerA']['name']
         p2_name = game['playerB']['name']
-        players |= {p1_name, p2_name}
-    ids = _get_player_ids_by_name(list(players))
-
-    # If some players aren't in database yet, add them
-    for player in players:
-        if player not in ids:
-            uuid = str(uuid4())
-            if _create_player(player, uuid):
-                ids[player] = uuid
-            else:
-                print(f"Error adding player '{player}' with ID {uuid}.")
+        names |= {p1_name, p2_name}
+    
+    ids = get_or_create_players(list(names))
 
     # Preprocess results into nicer data format and save to database
     for api_res in data:
