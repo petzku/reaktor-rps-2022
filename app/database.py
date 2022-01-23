@@ -71,7 +71,7 @@ def _create_player(name: str, uuid: str) -> bool:
     finally:
         con.close()
 
-def _add_game_result(game: GameResult) -> bool:
+def add_game_result(game: GameResult) -> bool:
     """ Add a result to the database
     
     Returns True if successful, False if not."""
@@ -124,7 +124,7 @@ def add_history_games(data: list[APIGameResult]) -> None: # TODO: typing
     # Preprocess results into nicer data format and save to database
     for api_res in data:
         res = result_from_api_result(api_res)
-        if not _add_game_result(res):
+        if not add_game_result(res):
             print("Error adding game: ", game)
 
 
