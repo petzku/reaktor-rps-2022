@@ -49,3 +49,6 @@ class GameBegin(TypedDict):
     gameId: GameId
     player1: Player
     player2: Player
+
+ResultCallback = Callable[[GameResult], None]
+BeginCallback = Callable[[GameBegin], None]

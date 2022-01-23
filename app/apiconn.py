@@ -2,12 +2,15 @@
 
 import database
 import requests
+import websocket
+import json
 
-from typing import Optional
+from typing import Optional, Callable
 from apityping import *
 
 
 API_BASE = "https://bad-api-assignment.reaktor.com/rps"
+WS_BASE = "wss://bad-api-assignment.reaktor.com/rps"
 
 
 def _fetch_history_page(key: Optional[str] = None) -> tuple[Optional[str], list[APIGameResult]]:
@@ -54,3 +57,28 @@ def fetch_new_history() -> None:
 
             # save newest "page" URL to DB whenever we finish processing the page
             database.update_history_page(key)
+
+def create_websocket_listener(result_callback: ResultCallback, begin_callback: BeginCallback):
+    """ Creates a listener to the API live websocket
+
+    result_callback: a callback for GAME_RESULT events
+    begin_callback: a callback for GAME_BEGIN events
+    """
+
+    def _live_ws_callback(ws: websocket.WebSocketApp, message: str) -> None:
+        try:
+            data = json.loads(message)
+        except json.decoder.JSONDecodeError as e:
+            print(f"Error decoding websocket response ({e}): {message[:100]}")
+            return
+        if 'type' in data:
+            if data['type'] == 'GAME_BEGIN':
+                beg = database.begin_from_api_begin(data)
+                begin_callback(beg)
+            elif data['type'] == 'GAME_RESULT':
+                res = database.result_from_api_result(data)
+                database.add_game_result(res)
+                result_callback(res)
+
+    url = WS_BASE + "/live"
+    wsapp = websocket.WebSocketApp(url, on_message=_live_ws_callback)
