@@ -9,6 +9,7 @@ socket.on('game begin', function(data) {
     console.debug("begin!");
     var gameInfo = data.gameInfo;
     console.debug(gameInfo);
+    add_live(gameInfo);
 });
 
 socket.on('game result', function(data) {
