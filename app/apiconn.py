@@ -78,7 +78,7 @@ def create_websocket_listener(result_callback: ResultCallback, begin_callback: B
 
             elif data['type'] == 'GAME_RESULT':
                 res = database.result_from_api_result(data)
-                # database.add_game_result(res)
+                database.add_game_result(res)
                 result_callback(res)
         else:
             print(f"no 'type' in {data.keys()}")

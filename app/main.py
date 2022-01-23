@@ -88,10 +88,7 @@ def socketio_app(app):
 if __name__ == "__main__":
 
     # update missing history
-    #apiconn.fetch_new_history()
-
-    # XXX: temporary for testing
-    # live_games = database.get_games_history()
+    apiconn.fetch_new_history()
 
     app = create_app()
     socketio, api_ws = socketio_app(app)
