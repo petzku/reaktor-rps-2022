@@ -5,7 +5,7 @@ from uuid import uuid4
 import rps
 
 from typing import Optional
-from apityping import APIGameResult, GameResult
+from apityping import APIGameResult, GameResult, PlayerName, PlayerId
 
 
 DB_FILE = 'results.db'
@@ -40,7 +40,7 @@ def update_history_page(key: str) -> None:
         print("Database error: ", e)
     con.close()
 
-def _get_player_ids_by_name(names: list[str]) -> dict[str, str]:
+def _get_player_ids_by_name(names: list[PlayerName]) -> dict[PlayerName, PlayerId]:
     """ Get ids for players in the given list, assuming they are in the database """
     con = sqlite3.connect(DB_FILE)
     cur = con.cursor()
@@ -53,7 +53,7 @@ def _get_player_ids_by_name(names: list[str]) -> dict[str, str]:
 
     return {name: id for name,id in res}
 
-def _create_player(name: str, uuid: str) -> bool:
+def _create_player(name: PlayerName, uuid: PlayerId) -> bool:
     """ Add a new player to the database 
     
     Returns True if successful, False if player could not be added."""
@@ -71,7 +71,7 @@ def _create_player(name: str, uuid: str) -> bool:
     finally:
         con.close()
 
-def get_or_create_players(names: list[str]) -> dict[str, str]:
+def get_or_create_players(names: list[PlayerName]) -> dict[PlayerName, PlayerId]:
     ids = _get_player_ids_by_name(names)
 
     # If some players aren't in database yet, add them
@@ -137,7 +137,7 @@ def add_history_games(data: list[APIGameResult]) -> None: # TODO: typing
 def result_from_api_result(api_res: APIGameResult) -> GameResult:
     p1, p2 = api_res['playerA'], api_res['playerB']
 
-    ids = _get_player_ids_by_name([p1['name'], p2['name']])
+    ids = get_or_create_players([p1['name'], p2['name']])
 
     p1_id = ids[p1['name']]
     p1_play = rps.rps_from_str(p1['played'])
