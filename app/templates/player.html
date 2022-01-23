@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block header %}
+  <h1>{% block title %}{{ player.name }}{% endblock title %}</h1>
+{% endblock header %}
+
+{% block content %}
+  <h2>Statistics</h2>
+  Record (win-loss-draw): {{ wins }}-{{ losses }}-{{ ties }}
+  <br/>
+  Winrate: {{ "%.1f%%" | format( 100 * wins / (games) if games > 0 else 0) }}
+  <br/>
+  Most played hand: {{ most_played }} ({{ most_played_count }} times)
+  <br/>
+
+  <h2>Recent games</h2>
+  <ul>
+    {% for game in past_games %}
+      {% include "gameresult.j2" %}
+    {% endfor %}
+  </ul>
+
+{% endblock content %}

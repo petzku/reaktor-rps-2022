@@ -39,8 +39,22 @@ def create_app():
 
     @app.route("/player/<uuid:pid>")
     def player(pid: str):
-        # TODO
-        return f"player {pid}"
+        pid = str(pid)
+        _player = database.get_player(pid)
+
+        ((w,l,t), plays) = database.get_player_stats(pid)
+
+        most_played_count = max(plays)
+        most_played = ("Rock", "Paper", "Scissors")[plays.index(most_played_count)]
+
+        past_games = database.get_games_by_player(pid)
+
+        return render_template("player.html",
+            player = _player,
+            wins = w, losses = l, ties = t, games = (w+l+t),
+            most_played = most_played, most_played_count = most_played_count,
+            past_games = past_games
+        )
     return app
 
 def socketio_app(app):
@@ -54,7 +68,7 @@ if __name__ == "__main__":
     #apiconn.fetch_new_history()
 
     # XXX: temporary for testing
-    live_games = database.get_games_history()
+    # live_games = database.get_games_history()
 
     app = create_app()
     socketio = socketio_app(app)
