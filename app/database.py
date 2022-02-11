@@ -5,7 +5,7 @@ from uuid import uuid4
 import rps
 import math
 
-from typing import Optional
+from typing import Optional, List, Dict, Tuple
 from apityping import APIGameResult, GameResult, APIGameBegin, GameBegin, GameId, Timestamp, Player, PlayerName, PlayerId
 
 
@@ -42,7 +42,7 @@ def update_history_page(key: str) -> None:
         print("Database error: ", e)
     con.close()
 
-def _get_player_ids_by_name(names: list[PlayerName]) -> dict[PlayerName, PlayerId]:
+def _get_player_ids_by_name(names: List[PlayerName]) -> Dict[PlayerName, PlayerId]:
     """ Get ids for players in the given list, assuming they are in the database """
     con = sqlite3.connect(DB_FILE)
     cur = con.cursor()
@@ -73,7 +73,7 @@ def _create_player(name: PlayerName, uuid: PlayerId) -> bool:
     finally:
         con.close()
 
-def get_or_create_players(names: list[PlayerName]) -> dict[PlayerName, PlayerId]:
+def get_or_create_players(names: List[PlayerName]) -> Dict[PlayerName, PlayerId]:
     ids = _get_player_ids_by_name(names)
 
     # If some players aren't in database yet, add them
@@ -117,7 +117,7 @@ def add_game_result(game: GameResult) -> bool:
     finally:
         con.close()
 
-def add_history_games(data: list[APIGameResult]) -> None: # TODO: typing
+def add_history_games(data: List[APIGameResult]) -> None: # TODO: typing
     """ Add one or more game results to the database """
 
     # Start by getting existing player IDs from database
@@ -137,7 +137,7 @@ def add_history_games(data: list[APIGameResult]) -> None: # TODO: typing
             print("Error adding game: ", game)
 
 
-def get_games_by_player(uuid: PlayerId, page: int = 0) -> list[GameResult]:
+def get_games_by_player(uuid: PlayerId, page: int = 0) -> List[GameResult]:
     """ Get nth page of a player's games. """
     con = sqlite3.connect(DB_FILE)
     cur = con.cursor()
@@ -158,7 +158,7 @@ def get_games_by_player(uuid: PlayerId, page: int = 0) -> list[GameResult]:
         for gid, t, p1_id, p1_name, p1_play, p1_res, p2_id, p2_name, p2_play, p2_res in cur.fetchall()
     ]
 
-def get_games_history(page: int = 0) -> list[GameResult]:
+def get_games_history(page: int = 0) -> List[GameResult]:
     """ Get nth page of all played games. """
     con = sqlite3.connect(DB_FILE)
     cur = con.cursor()
@@ -178,7 +178,7 @@ def get_games_history(page: int = 0) -> list[GameResult]:
         for gid, t, p1_id, p1_name, p1_play, p1_res, p2_id, p2_name, p2_play, p2_res in cur.fetchall()
     ]
 
-def get_games_count_by_player(uuid: PlayerId) -> tuple[int, int]:
+def get_games_count_by_player(uuid: PlayerId) -> Tuple[int, int]:
     """ Get count of games and pages for player """
 
     con = sqlite3.connect(DB_FILE)
@@ -189,7 +189,7 @@ def get_games_count_by_player(uuid: PlayerId) -> tuple[int, int]:
     (n,) = cur.fetchone()
     return n, math.ceil(n / GAMES_PAGE_LENGTH)
 
-def get_games_count_total() -> tuple[int, int]:
+def get_games_count_total() -> Tuple[int, int]:
     """ Get total count of games and pages """
 
     con = sqlite3.connect(DB_FILE)
@@ -200,7 +200,7 @@ def get_games_count_total() -> tuple[int, int]:
     (n,) = cur.fetchone()
     return n, math.ceil(n / GAMES_PAGE_LENGTH)
 
-def get_player_stats(uuid: PlayerId) -> tuple[tuple[int, int, int],tuple[int, int, int]]:
+def get_player_stats(uuid: PlayerId) -> Tuple[Tuple[int, int, int],Tuple[int, int, int]]:
     """ Return player stats in the format: ((win,loss,tie), (rock,paper,scissors)) """
 
     con = sqlite3.connect(DB_FILE)

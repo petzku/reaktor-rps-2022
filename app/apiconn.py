@@ -5,7 +5,7 @@ import requests
 import websocket
 import json
 
-from typing import Optional, Callable
+from typing import Optional, Callable, Tuple, List
 from apityping import *
 
 
@@ -13,7 +13,7 @@ API_BASE = "https://bad-api-assignment.reaktor.com/rps"
 WS_BASE = "wss://bad-api-assignment.reaktor.com/rps"
 
 
-def _fetch_history_page(key: Optional[str] = None) -> tuple[Optional[str], list[APIGameResult]]:
+def _fetch_history_page(key: Optional[str] = None) -> Tuple[Optional[str], List[APIGameResult]]:
     """ Fetch single page from the API
     
     key:
@@ -56,6 +56,7 @@ def fetch_new_history() -> None:
             database.add_history_games(data)
 
             # save newest "page" URL to DB whenever we finish processing the page
+            print(f"!! done page: {key}")
             database.update_history_page(key)
         else:
             break

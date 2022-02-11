@@ -1,6 +1,6 @@
 """ Type definitions for API access """
 
-from typing import TypedDict, Literal, Callable
+from typing import TypedDict, Literal, Callable, Union
 from rps import RPS, Result
 
 RpsText = Literal['ROCK', 'PAPER', 'SCISSORS']
@@ -53,5 +53,5 @@ class GameBegin(TypedDict):
 ResultCallback = Callable[[GameResult], None]
 BeginCallback = Callable[[GameBegin], None]
 
-def is_finished(game: GameResult | GameBegin) -> bool:
+def is_finished(game: Union[GameResult, GameBegin]) -> bool:
     return 't' in game.keys()
