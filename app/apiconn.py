@@ -57,6 +57,8 @@ def fetch_new_history() -> None:
 
             # save newest "page" URL to DB whenever we finish processing the page
             database.update_history_page(key)
+        else:
+            break
 
 def create_websocket_listener(result_callback: ResultCallback, begin_callback: BeginCallback):
     """ Creates a listener to the API live websocket
